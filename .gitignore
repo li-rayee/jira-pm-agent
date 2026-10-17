@@ -1,0 +1,19 @@
+# 密钥与本地配置（绝不提交）
+.env
+*.env
+config.json
+secrets.json
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+
+# 真实数据（如有，勿入库）
+real_jira_data.json
+real_*.json
+real_report.md
+real_*.md
+
+# 本地验证产物（可选）
+report_local.md
