@@ -61,7 +61,10 @@ def api_post(path, body):
     })
     try:
         with urllib.request.urlopen(req, timeout=30) as r:
-            return json.loads(r.read().decode("utf-8"))
+            body = r.read().decode("utf-8")
+            if not body.strip():
+                return {}   # 204 No Content 等空响应
+            return json.loads(body)
     except urllib.error.HTTPError as e:
         err_body = e.read().decode("utf-8", "ignore")
         raise RuntimeError(f"HTTP {e.code} {e.reason} -> {err_body[:500]}")
@@ -88,6 +91,22 @@ def search_issues(jql, max_results=50, fields=None):
     if fields:
         body["fields"] = fields
     return api_post("search/jql", body)
+
+
+def api_delete(path):
+    """DELETE 一个 Jira Cloud REST 端点（如删除 issue）。"""
+    site, _, _ = _env()
+    url = f"{site}/rest/api/3/{path}"
+    req = urllib.request.Request(url, headers={
+        "Authorization": _auth_header(),
+        "Accept": "application/json",
+    }, method="DELETE")
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return r.status
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8", "ignore")
+        raise RuntimeError(f"HTTP {e.code} {e.reason} -> {body[:500]}")
 
 
 def get_projects(max_results=50):
