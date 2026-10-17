@@ -66,13 +66,21 @@ def fetch_and_normalize(jql, max_results=50):
     """
     拉取真实 Jira 并归一化。不传 jql 时自动用「账号下全部项目」作为边界查询
     （新版 /search/jql 要求 JQL 必须有边界）。
+
+    注意：真实 Jira Cloud 的 /search/jql 若不显式传 fields，返回的 issues
+    其 fields 为空，会导致 duedate/status/storyPoints 全部读不到。这里必须
+    显式列出所需字段。
     """
+    # 必须显式请求的字段（故事点字段用环境变量覆盖）
+    sp_field = _story_point_field()
+    fields = ["summary", "status", "assignee", "duedate", sp_field,
+              "issuetype", "resolutiondate", "created", "updated",
+              "project", "progress"]
     if not jql:
         projs = get_projects()
         keys = [p["key"] for p in projs.get("values", [])]
         jql = f"project IN ({', '.join(keys)}) ORDER BY updated DESC" if keys \
               else "ORDER BY updated DESC"
-    sp_field = _story_point_field()
-    data = search_issues(jql, max_results=max_results)
+    data = search_issues(jql, max_results=max_results, fields=fields)
     raw_issues = data.get("issues", [])
     return [normalize_issue(it, sp_field) for it in raw_issues]
