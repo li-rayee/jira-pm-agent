@@ -45,6 +45,11 @@ export JIRA_STORYPOINT_FIELD="customfield_10016"
 python run_real.py "" --out real_report.md
 #    → 自动拉取账号下全部项目，归一化后跑引擎，输出 real_report.md
 
+# 2.5) 往真实 Jira 写入覆盖 5 类风险规则的 demo issue（可选，用于现场演示）
+python demo_seed.py                       # 清理旧 [Demo] 后重建 9 条覆盖风险的 issue
+python run_real.py "project = SCRUM" --out real_report.md
+#     → 命中 8 条：逾期2 / 临近到期2 / 负载失衡1 / 反复流转1 / 故事点过大2（高4/中2/低2）
+
 # 3) 组装提示词（设置 API Key 后真实调用大模型；否则只打印 prompt）
 export DEEPSEEK_API_KEY="你的key"     # 或 OPENAI_API_KEY
 python prompts.py
@@ -67,6 +72,8 @@ python prompts.py
 | `run_real.py` | 「拉真实数据 → 归一化 → 跑引擎 → 出报告」一键脚本 |
 | `mock_jira_data.json` | 仿真 Jira 返回 fixture（20 条，含 6 类风险样本） |
 | `report.md` / `real_report.md` | 仿真 / 真实数据验证文本报告 |
+| `demo_seed.py` | 往真实 Jira（SCRUM 项目）写入覆盖 5 类风险规则的 demo issue（可重复运行，用于现场演示） |
+| `explore_meta.py` | 探测项目元数据（accountId / issuetype / 可用状态流转），辅助接入 |
 | `coze_setup.md` | Coze / Dify 三个工作流的**逐节点配置** + 可粘贴代码 + 提示词原文 |
 
 ---
@@ -97,6 +104,8 @@ python prompts.py
 
 - **规则覆盖验证**：用 `mock_jira_data.json`（仿真 fixture）驱动引擎，覆盖全部 6 类风险且零误报 —— 证明规则逻辑正确。
 - **真实接入验证**：已直连真实 Jira Cloud（作者站点），端到端跑通并零误报 —— 证明 API 集成、字段映射、changelog 状态变更统计均有效。
+- **真实 Demo 数据现场演示**：用 `demo_seed.py` 在真实 Jira 写入 9 条覆盖风险的 `[Demo]` issue（其中 8 个挂在同一人进行中任务以触发负载失衡，1 条做 7 次状态跳转以触发反复流转），再用 `run_real.py` 真实跑批，**命中 8 条风险、覆盖 5 类规则**（逾期2 / 临近到期2 / 负载失衡1 / 反复流转1 / 故事点过大2，高4/中2/低2）。
+- **关于「长期未更新」规则（诚实说明）**：该规则判定"最近状态变更 > 5 天前"，依赖历史时间戳，新建 demo 数据无法真实制造；因此本仓库用仿真 fixture（`mock_jira_data.json`）完整覆盖该规则（mock 共命中 11 条、6 类全触发）。真实环境中它会在历史数据上正常生效。
 - 若要在简历写"已接入真实团队数据并调参"，需在真实迭代跑满一个周期后，用 `run_real.py` 实测替换本仓库的占位结论。
 
 ---
