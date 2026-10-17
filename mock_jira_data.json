@@ -1,0 +1,304 @@
+{
+  "issues": [
+    {
+      "key": "PROJ-1",
+      "fields": {
+        "summary": "登录模块性能优化",
+        "status": { "name": "In Progress" },
+        "assignee": { "displayName": "张三" },
+        "created": "2026-09-20T09:00:00.000+0800",
+        "updated": "2026-10-16T10:00:00.000+0800",
+        "duedate": "2026-10-10",
+        "progress": 40,
+        "storyPoints": 5,
+        "statusChangeCount": 2,
+        "lastStatusChange": "2026-10-16T10:00:00.000+0800"
+      }
+    },
+    {
+      "key": "PROJ-2",
+      "fields": {
+        "summary": "订单导出 CSV 功能",
+        "status": { "name": "In Progress" },
+        "assignee": { "displayName": "张三" },
+        "created": "2026-09-25T09:00:00.000+0800",
+        "updated": "2026-10-17T11:00:00.000+0800",
+        "duedate": "2026-10-20",
+        "progress": 30,
+        "storyPoints": 3,
+        "statusChangeCount": 1,
+        "lastStatusChange": "2026-10-17T11:00:00.000+0800"
+      }
+    },
+    {
+      "key": "PROJ-3",
+      "fields": {
+        "summary": "支付网关重构（大需求）",
+        "status": { "name": "In Progress" },
+        "assignee": { "displayName": "张三" },
+        "created": "2026-09-18T09:00:00.000+0800",
+        "updated": "2026-10-15T15:00:00.000+0800",
+        "duedate": "2026-11-05",
+        "progress": 50,
+        "storyPoints": 13,
+        "statusChangeCount": 3,
+        "lastStatusChange": "2026-10-15T15:00:00.000+0800"
+      }
+    },
+    {
+      "key": "PROJ-4",
+      "fields": {
+        "summary": "风控规则引擎接入",
+        "status": { "name": "In Progress" },
+        "assignee": { "displayName": "张三" },
+        "created": "2026-09-22T09:00:00.000+0800",
+        "updated": "2026-10-16T18:00:00.000+0800",
+        "duedate": "2026-11-10",
+        "progress": 60,
+        "storyPoints": 5,
+        "statusChangeCount": 8,
+        "lastStatusChange": "2026-10-16T18:00:00.000+0800"
+      }
+    },
+    {
+      "key": "PROJ-5",
+      "fields": {
+        "summary": "消息推送服务灰度",
+        "status": { "name": "In Progress" },
+        "assignee": { "displayName": "张三" },
+        "created": "2026-09-28T09:00:00.000+0800",
+        "updated": "2026-10-17T09:00:00.000+0800",
+        "duedate": "2026-11-12",
+        "progress": 70,
+        "storyPoints": 3,
+        "statusChangeCount": 2,
+        "lastStatusChange": "2026-10-17T09:00:00.000+0800"
+      }
+    },
+    {
+      "key": "PROJ-6",
+      "fields": {
+        "summary": "后台权限模型梳理",
+        "status": { "name": "In Progress" },
+        "assignee": { "displayName": "张三" },
+        "created": "2026-09-30T09:00:00.000+0800",
+        "updated": "2026-10-17T14:00:00.000+0800",
+        "duedate": "2026-11-15",
+        "progress": 80,
+        "storyPoints": 2,
+        "statusChangeCount": 1,
+        "lastStatusChange": "2026-10-17T14:00:00.000+0800"
+      }
+    },
+    {
+      "key": "PROJ-7",
+      "fields": {
+        "summary": "数据看板前端联调",
+        "status": { "name": "In Progress" },
+        "assignee": { "displayName": "李四" },
+        "created": "2026-09-26T09:00:00.000+0800",
+        "updated": "2026-10-16T12:00:00.000+0800",
+        "duedate": "2026-10-15",
+        "progress": 50,
+        "storyPoints": 8,
+        "statusChangeCount": 2,
+        "lastStatusChange": "2026-10-16T12:00:00.000+0800"
+      }
+    },
+    {
+      "key": "PROJ-8",
+      "fields": {
+        "summary": "用户反馈收集表单",
+        "status": { "name": "To Do" },
+        "assignee": { "displayName": "李四" },
+        "created": "2026-09-29T09:00:00.000+0800",
+        "updated": "2026-10-10T09:00:00.000+0800",
+        "duedate": "2026-10-25",
+        "progress": 0,
+        "storyPoints": 5,
+        "statusChangeCount": 1,
+        "lastStatusChange": "2026-10-10T09:00:00.000+0800"
+      }
+    },
+    {
+      "key": "PROJ-9",
+      "fields": {
+        "summary": "API 网关限流策略",
+        "status": { "name": "In Progress" },
+        "assignee": { "displayName": "王五" },
+        "created": "2026-09-27T09:00:00.000+0800",
+        "updated": "2026-10-17T16:00:00.000+0800",
+        "duedate": "2026-11-01",
+        "progress": 50,
+        "storyPoints": 5,
+        "statusChangeCount": 2,
+        "lastStatusChange": "2026-10-17T16:00:00.000+0800"
+      }
+    },
+    {
+      "key": "PROJ-10",
+      "fields": {
+        "summary": "埋点 SDK 升级",
+        "status": { "name": "In Progress" },
+        "assignee": { "displayName": "王五" },
+        "created": "2026-09-30T09:00:00.000+0800",
+        "updated": "2026-10-16T20:00:00.000+0800",
+        "duedate": "2026-10-18",
+        "progress": 40,
+        "storyPoints": 5,
+        "statusChangeCount": 3,
+        "lastStatusChange": "2026-10-16T20:00:00.000+0800"
+      }
+    },
+    {
+      "key": "PROJ-11",
+      "fields": {
+        "summary": "首页改版上线",
+        "status": { "name": "Done" },
+        "assignee": { "displayName": "王五" },
+        "created": "2026-09-15T09:00:00.000+0800",
+        "updated": "2026-10-14T09:00:00.000+0800",
+        "duedate": "2026-10-12",
+        "progress": 100,
+        "storyPoints": 5,
+        "statusChangeCount": 4,
+        "lastStatusChange": "2026-10-14T09:00:00.000+0800"
+      }
+    },
+    {
+      "key": "PROJ-12",
+      "fields": {
+        "summary": "日志采集agent开发",
+        "status": { "name": "In Progress" },
+        "assignee": { "displayName": "赵六" },
+        "created": "2026-09-19T09:00:00.000+0800",
+        "updated": "2026-10-04T09:00:00.000+0800",
+        "duedate": "2026-11-20",
+        "progress": 30,
+        "storyPoints": 8,
+        "statusChangeCount": 2,
+        "lastStatusChange": "2026-10-04T09:00:00.000+0800"
+      }
+    },
+    {
+      "key": "PROJ-13",
+      "fields": {
+        "summary": "计费系统迁移（大需求）",
+        "status": { "name": "To Do" },
+        "assignee": { "displayName": "赵六" },
+        "created": "2026-09-21T09:00:00.000+0800",
+        "updated": "2026-10-16T10:00:00.000+0800",
+        "duedate": "2026-11-25",
+        "progress": 0,
+        "storyPoints": 13,
+        "statusChangeCount": 1,
+        "lastStatusChange": "2026-10-16T10:00:00.000+0800"
+      }
+    },
+    {
+      "key": "PROJ-14",
+      "fields": {
+        "summary": "搜索召回优化",
+        "status": { "name": "In Progress" },
+        "assignee": { "displayName": "钱七" },
+        "created": "2026-09-24T09:00:00.000+0800",
+        "updated": "2026-10-17T13:00:00.000+0800",
+        "duedate": "2026-12-01",
+        "progress": 60,
+        "storyPoints": 3,
+        "statusChangeCount": 2,
+        "lastStatusChange": "2026-10-17T13:00:00.000+0800"
+      }
+    },
+    {
+      "key": "PROJ-15",
+      "fields": {
+        "summary": "报表导出稳定性修复",
+        "status": { "name": "Done" },
+        "assignee": { "displayName": "钱七" },
+        "created": "2026-09-17T09:00:00.000+0800",
+        "updated": "2026-10-15T09:00:00.000+0800",
+        "duedate": "2026-11-28",
+        "progress": 100,
+        "storyPoints": 5,
+        "statusChangeCount": 3,
+        "lastStatusChange": "2026-10-15T09:00:00.000+0800"
+      }
+    },
+    {
+      "key": "PROJ-16",
+      "fields": {
+        "summary": "配置中心接入",
+        "status": { "name": "In Progress" },
+        "assignee": { "displayName": "孙八" },
+        "created": "2026-09-23T09:00:00.000+0800",
+        "updated": "2026-10-17T17:00:00.000+0800",
+        "duedate": "2026-12-05",
+        "progress": 55,
+        "storyPoints": 5,
+        "statusChangeCount": 7,
+        "lastStatusChange": "2026-10-17T17:00:00.000+0800"
+      }
+    },
+    {
+      "key": "PROJ-17",
+      "fields": {
+        "summary": "灰度发布流程文档",
+        "status": { "name": "To Do" },
+        "assignee": { "displayName": "孙八" },
+        "created": "2026-09-29T09:00:00.000+0800",
+        "updated": "2026-10-16T11:00:00.000+0800",
+        "duedate": "2026-12-10",
+        "progress": 0,
+        "storyPoints": 3,
+        "statusChangeCount": 1,
+        "lastStatusChange": "2026-10-16T11:00:00.000+0800"
+      }
+    },
+    {
+      "key": "PROJ-18",
+      "fields": {
+        "summary": "缓存命中率监控",
+        "status": { "name": "In Progress" },
+        "assignee": { "displayName": "周九" },
+        "created": "2026-09-28T09:00:00.000+0800",
+        "updated": "2026-10-17T10:00:00.000+0800",
+        "duedate": "2026-12-15",
+        "progress": 50,
+        "storyPoints": 5,
+        "statusChangeCount": 2,
+        "lastStatusChange": "2026-10-17T10:00:00.000+0800"
+      }
+    },
+    {
+      "key": "PROJ-19",
+      "fields": {
+        "summary": "旧接口下线",
+        "status": { "name": "Done" },
+        "assignee": { "displayName": "李四" },
+        "created": "2026-09-16T09:00:00.000+0800",
+        "updated": "2026-10-14T09:00:00.000+0800",
+        "duedate": "2026-10-10",
+        "progress": 100,
+        "storyPoints": 5,
+        "statusChangeCount": 3,
+        "lastStatusChange": "2026-10-14T09:00:00.000+0800"
+      }
+    },
+    {
+      "key": "PROJ-20",
+      "fields": {
+        "summary": "数据库慢查询治理",
+        "status": { "name": "In Progress" },
+        "assignee": { "displayName": "周九" },
+        "created": "2026-09-30T09:00:00.000+0800",
+        "updated": "2026-10-17T15:00:00.000+0800",
+        "duedate": "2026-12-20",
+        "progress": 60,
+        "storyPoints": 5,
+        "statusChangeCount": 2,
+        "lastStatusChange": "2026-10-17T15:00:00.000+0800"
+      }
+    }
+  ]
+}
