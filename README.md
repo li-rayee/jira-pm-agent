@@ -2,6 +2,7 @@
 
 > 面向敏捷团队的**对话式项目管理助手**：连接 Jira REST API，自动做风险扫描 / 周报生成 / 负载查询。
 > 核心设计 = **规则引擎（确定性判断）前置过滤 + 大模型（归因与措辞）后置加工**，体现「人机协同」。
+> 编排层用 **WorkBuddy 智能体**实现（替代 Coze/Dify）：你直接在对话里问，智能体调用本仓库脚本完成取数、算风险、生成分析，无需注册第三方平台、无需拖画布、无需额外大模型 API Key。
 
 ---
 
@@ -16,32 +17,37 @@
 
 ---
 
-## 架构（四层）
+## 架构（WorkBuddy 编排）
 
 ```
-① 对话入口   在 Coze / Dify 里问："本周有什么风险？"
-② 工作流编排  意图识别 → HTTP 请求 → 代码节点(规则引擎) → 大模型 → 回复
+① 对话入口   在 WorkBuddy 对话里问："本周有什么风险？"
+② 智能体编排  WorkBuddy 直接调用本仓库脚本：取数 → 规则引擎 → 大模型分析 → 回复
 ③ 数据获取   Jira Cloud REST API（API Token 认证，新版 `/search/jql` 端点）
-④ 大模型     DeepSeek / 通义千问（风险归因 + 周报生成）
+④ 大模型     WorkBuddy 内置模型（风险归因 + 周报生成，受"禁止编造"约束）
 ```
 
-Coze / Dify 在这里是**胶水**：把"用户问了什么 → 调哪个接口 → 数据怎么喂给 AI"串成对话式链路。
+原方案用 Coze/Dify 做"胶水"，本仓库改用 **WorkBuddy 智能体**承担同样的对话入口 + 工作流编排 + 大模型三层职责；
+规则引擎与 Jira 客户端（`risk_engine.py` / `jira_client.py`）是不变的"内核"，只是编排者从 Coze 换成 WorkBuddy。
+好处：免第三方注册、免可视化画布、免单独大模型 Key；**对话即调用**，代码已在本仓库跑通验证。
+
+> 若你仍想要一个"团队可访问的独立 Bot"，也可回退到 Coze/Dify —— 思路与 `workbuddy_setup.md` 一致，本仓库逻辑可整体复用。
 
 ---
 
 ## 快速开始（本地，零第三方依赖）
 
 ```bash
+# 0) 放好凭证：在项目根目录创建 .env（已被 .gitignore 排除，绝不提交）
+#    JIRA_SITE=https://你的站点.atlassian.net
+#    JIRA_EMAIL=你创建 Token 的邮箱
+#    JIRA_TOKEN=ATATT3xF...        # Jira 后台 → 账户设置 → 安全 → 创建 API Token
+#    （脚本会自动读取 .env；也可临时用 export 覆盖）
+
 # 1) 跑规则引擎（用仿真 fixture 验证 6 类规则覆盖）
 python risk_engine.py mock_jira_data.json --today 2026-10-18
 #    → 输出风险清单 JSON + report.md（命中 11 条，6 类规则全部触发，干净样本零误报）
 
-# 2) 连接【真实 Jira Cloud】并直接跑（需要你的站点 / 邮箱 / API Token，走环境变量）
-export JIRA_SITE="https://你的站点.atlassian.net"
-export JIRA_EMAIL="你创建 Token 的邮箱"
-export JIRA_TOKEN="ATATT3xF..."        # Jira 后台 → 账户设置 → 安全 → 创建 API Token
-#   可选：故事点自定义字段 ID（不同站点可能不同，默认 customfield_10016）
-export JIRA_STORYPOINT_FIELD="customfield_10016"
+# 2) 连接【真实 Jira Cloud】并直接跑（凭证走 .env 或环境变量）
 python run_real.py "" --out real_report.md
 #    → 自动拉取账号下全部项目，归一化后跑引擎，输出 real_report.md
 
@@ -51,6 +57,7 @@ python run_real.py "project = SCRUM" --out real_report.md
 #     → 命中 8 条：逾期2 / 临近到期2 / 负载失衡1 / 反复流转1 / 故事点过大2（高4/中2/低2）
 
 # 3) 组装提示词（设置 API Key 后真实调用大模型；否则只打印 prompt）
+#    注：在 WorkBuddy 中可跳过此步，直接用内置模型做归因/周报
 export DEEPSEEK_API_KEY="你的key"     # 或 OPENAI_API_KEY
 python prompts.py
 ```
@@ -67,14 +74,14 @@ python prompts.py
 |---|---|
 | `risk_engine.py` | 规则引擎（6 类风险），阈值集中在 `RULE_CONFIG`，支持中英文状态名 |
 | `prompts.py` | 两套提示词（风险归因 + 周报）+ 大模型调用占位（`urllib` 调 DeepSeek/通义，无 key 只打印） |
-| `jira_client.py` | 真实 Jira Cloud REST 客户端（认证 + `/search/jql` 拉取 + 字段映射辅助），密钥走环境变量 |
+| `jira_client.py` | 真实 Jira Cloud REST 客户端（认证 + `/search/jql` 拉取 + 字段映射辅助），自动读取 `.env` 凭证 |
 | `jira_adapter.py` | 把真实 Jira issue 归一化为引擎输入（从 `changelog` 算状态变更、`progress` 算百分比） |
 | `run_real.py` | 「拉真实数据 → 归一化 → 跑引擎 → 出报告」一键脚本 |
 | `mock_jira_data.json` | 仿真 Jira 返回 fixture（20 条，含 6 类风险样本） |
 | `report.md` / `real_report.md` | 仿真 / 真实数据验证文本报告 |
 | `demo_seed.py` | 往真实 Jira（SCRUM 项目）写入覆盖 5 类风险规则的 demo issue（可重复运行，用于现场演示） |
 | `explore_meta.py` | 探测项目元数据（accountId / issuetype / 可用状态流转），辅助接入 |
-| `coze_setup.md` | Coze / Dify 三个工作流的**逐节点配置** + 可粘贴代码 + 提示词原文 |
+| `workbuddy_setup.md` | **WorkBuddy 用法**：对话式调用 + 每日自动化配置 + 三段提示词原文 |
 
 ---
 
@@ -94,9 +101,11 @@ python prompts.py
 
 ---
 
-## Coze / Dify 接入
+## WorkBuddy 接入
 
-见 **`coze_setup.md`**：三个工作流（风险扫描 / 周报生成 / 负载查询）的节点类型、参数、连线、代码节点 Python、提示词原文，照着在画布上拖即可。其中「代码节点」可直接复用本仓库的 `risk_engine.py` 逻辑。
+见 **`workbuddy_setup.md`**：两种用法（A. 直接在 WorkBuddy 对话里问；B. 配置每日自动化定时扫描）。
+其中风险归因 / 周报 / 负载查询三段提示词原文见该文档，可由 WorkBuddy 直接套用 `prompts.py` 或自行生成。
+规则引擎逻辑在 `risk_engine.py`，可被智能体直接调用。
 
 ---
 
@@ -114,5 +123,5 @@ python prompts.py
 
 - 本项目用于**学习 / 作品集展示**。仿真 `mock_jira_data.json` 为非生产数据。
 - 真实 Jira 接入：`lastStatusChange` 与 `statusChangeCount` 由 `jira_adapter.py` 从 `changelog.histories` 统计；`progress` 由 `progress` 对象换算百分比。
-- **密钥安全**：`JIRA_TOKEN` 等只通过环境变量传入，绝不写进代码或提交仓库（见 `.gitignore`）。
+- **密钥安全**：`JIRA_TOKEN` 等只通过 `.env` 或环境变量传入，绝不写进代码或提交仓库（见 `.gitignore`）。本地运行与 WorkBuddy 自动化均读取项目根目录 `.env`。
 - 大模型输出受"禁止编造 / 需人工确认"约束；本项目不构成任何生产系统保障。
