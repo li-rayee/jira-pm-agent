@@ -16,7 +16,28 @@ import urllib.error
 from urllib.parse import urlencode
 
 
+def _load_dotenv(path=None):
+    """读取项目根目录 .env（若存在）注入环境变量（不覆盖已设值）。"""
+    if path is None:
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+    if not os.path.exists(path):
+        return
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                k, v = line.split("=", 1)
+                k, v = k.strip(), v.strip().strip('"').strip("'")
+                if k and k not in os.environ:
+                    os.environ[k] = v
+    except Exception:
+        pass
+
+
 def _env():
+    _load_dotenv()
     site = os.environ.get("JIRA_SITE", "").rstrip("/")
     email = os.environ.get("JIRA_EMAIL", "")
     token = os.environ.get("JIRA_TOKEN", "")
