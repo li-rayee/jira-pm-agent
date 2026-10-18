@@ -174,41 +174,50 @@ class RiskEngine:
             points = _issue_points(it)
             progress = _issue_progress(it)
             assignee = _issue_assignee(it)
+            facts = {
+                "status": status,
+                "due": due.isoformat() if due else None,
+                "progress": round(progress, 1),
+                "churn": churn,
+                "assignee": assignee,
+                "last_change": last_change.isoformat() if last_change else None,
+                "points": points,
+            }
 
             # 规则1：逾期（状态≠Done 且 due < 今天）
             if not self._is_done(status) and due is not None:
                 if due < self.today + timedelta(days=self.cfg["overdue_days"]):
                     risks.append(self._mk(key, summary, "逾期", "高",
-                        f"状态[{status}]未完成，到期日 {due.isoformat()} 已过去 "
-                        f"{(self.today - due).days} 天"))
+                    f"状态[{status}]未完成，到期日 {due.isoformat()} 已过去 "
+                    f"{(self.today - due).days} 天", facts))
 
             # 规则2：长期未更新（最近状态变更 > stale_days 天前）
             if last_change is not None:
                 idle_days = (self.today - last_change).days
                 if idle_days > self.cfg["stale_days"]:
                     risks.append(self._mk(key, summary, "长期未更新", "中",
-                        f"最近一次状态变更在 {last_change.isoformat()}，"
-                        f"已 {idle_days} 天未动，可能卡住"))
+                    f"最近一次状态变更在 {last_change.isoformat()}，"
+                    f"已 {idle_days} 天未动，可能卡住", facts))
 
             # 规则3：反复流转（状态变更次数 > churn_count）
             if churn > self.cfg["churn_count"]:
                 risks.append(self._mk(key, summary, "反复流转", "中",
                     f"状态变更 {churn} 次（> {self.cfg['churn_count']}），"
-                    f"需求可能不清晰或存在阻塞"))
+                    f"需求可能不清晰或存在阻塞", facts))
 
             # 规则4：故事点过大（> big_story_points）
             if points > self.cfg["big_story_points"]:
                 risks.append(self._mk(key, summary, "故事点过大", "低",
                     f"故事点 {points:.0f}（> {self.cfg['big_story_points']}），"
-                    f"建议拆分为更小粒度"))
+                    f"建议拆分为更小粒度", facts))
 
             # 规则6：临近到期未完成（due 在窗口内 且 进度 < 阈值）
             if not self._is_done(status) and due is not None:
                 window_end = self.today + timedelta(days=self.cfg["due_soon_window"])
                 if self.today <= due <= window_end and progress < self.cfg["due_soon_progress"]:
                     risks.append(self._mk(key, summary, "临近到期未完成", "高",
-                        f"到期日 {due.isoformat()}（{ (due - self.today).days } 天内），"
-                        f"进度仅 {progress:.0f}%"))
+                    f"到期日 {due.isoformat()}（{ (due - self.today).days } 天内），"
+                    f"进度仅 {progress:.0f}%", facts))
 
         # 规则5：负载失衡（某人进行中任务数 > 阈值）
         for name, keys in in_progress_by_person.items():
@@ -230,7 +239,8 @@ class RiskEngine:
                                   r.get("issue_key") or ""))
         return self._build_result(issues, risks)
 
-    def _mk(self, key, summary, rule, severity, detail):
+    def _mk(self, key, summary, rule, severity, detail, facts=None):
+        f = facts or {}
         return {
             "issue_key": key,
             "summary": summary,
@@ -238,8 +248,13 @@ class RiskEngine:
             "severity": severity,
             "detail": detail,
             "raw_facts": {
-                "status": None, "due": None, "progress": None,
-                "churn": None, "assignee": None,
+                "status": f.get("status"),
+                "due": f.get("due"),
+                "progress": f.get("progress"),
+                "churn": f.get("churn"),
+                "assignee": f.get("assignee"),
+                "last_change": f.get("last_change"),
+                "points": f.get("points"),
             },
         }
 
